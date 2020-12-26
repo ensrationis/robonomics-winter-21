@@ -1,10 +1,10 @@
 # Robonomics Winter School 2021
-Try to build Dapps &amp;&amp; Web Services for IoT on Polkadot Parachain in time of Robonomics Winter School 2021. Event page on crowdcast.io will be soon...
+Try to build Dapps &amp;&amp; Web Services for IoT on Polkadot Parachain in time of Robonomics Winter School 2021 in period from 10 to 24 February. Event page on crowdcast.io will be soon...
 
 ## Lectures
 
-Name | Description | Duration | Main contributor
------|-------------|---------|-------------------
+Name | Description |  Main contributor
+-----|-------------|-------------------
 **What is Robonomics?** | Robonomics is an open-source platform for IoT applications. We support a new generation of internet technologies (web3) that implements the exchange of technical and economic information in the form of atomic transactions between user applications, IoT services, and complex robotics. | @ensrationis
 **Robonomics Connectivity** | For the developers’ convenience, Robonomics contains a set of software for connecting: IoT devices using the HTTP/MQTT protocol, complex robotic systems using the Robot Operating System (ROS). | @vourhey
 **Decentralized Cloud infrastructure for IoT** | Robonomics Web Services (RWS) is the basic infrastructural service for Robotics and IoT on top of Robonomics Parachain and IPFS. | @ensrationis
@@ -30,9 +30,3 @@ Name | Description | Main contributor
 * [@vourhey](https://github.com/Vourhey)
 * [@positivecrash](https://github.com/positivecrash)
 * [@ensrationis](https://scholar.google.com/citations?user=0c53yygAAAAJ&hl=en)
-
-## Event details
-* Duration: 10 - 24 Febrary 2021
-
-## Offline part - Basecamp in the Middle of Volga river
-Dear friends and collegues who will
