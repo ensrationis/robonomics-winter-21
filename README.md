@@ -23,7 +23,7 @@ Name | Description | Main contributor
 **Connect Digital Twins With Your Services** | Using a prepared digital twin template, or by developing and publishing your own, you can build an application to provide services to robots. Get acquainted with the general scheme of this process, after that we suggest using the tools from the Robonomics platform, with which you can launch your service. | @vourhey
 **Build Dapp for End Users** | Using Robonomics.js, learn how to interact via dapp with digital twins of devices. Build IoT applications to transfer telemetry from devices to users, and also provide the ability to launch, for example, a robot vacuum cleaner using the Robonomics decentralized cloud | @vol4tim && @positivecrash
 
-## Robonomics team developers who will provide master classes
+## Robonomics team developers who will provide lectures and master classes
 * [@kap2fox](https://scholar.google.com/citations?user=J3HFpjoAAAAJ&hl=en)
 * [@akru](https://github.com/akru)
 * [@vol4tim](https://github.com/vol4tim)
