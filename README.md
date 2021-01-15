@@ -1,7 +1,7 @@
 # Robonomics Winter School 2021
 Try to build Dapps &amp;&amp; Web Services for IoT on Polkadot Parachain in time of Robonomics Winter School 2021 in period from 10 to 24 February. 
 
-Event page on:
+Links:
 * [Robonomcis.network web site](https://robonomics.network/blog/winter-robonomics-school/)
 * [Event on the meetup](https://www.meetup.com/robonomics/events/275378464/)
 * [Opening Ceremony Stream On YouTube](https://youtu.be/kQaSwNYHJQ8)
