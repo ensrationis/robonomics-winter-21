@@ -8,14 +8,14 @@ Links:
 
 ## Lessons
 
-* **Lesson 1:** What is Robonomics?
+* **Lesson 1:** Connect robotics to user app
 * **Lesson 2:** Robonomics GitHub overview
 * **Lesson 3:** Robonomics IO in practice
 * **Lesson 4:** Robonomics Parachain In Practice With Cross-chain Messaging
 * **Lesson 5:** Robonomics Connectivity
 * **Lesson 6:** Build IoT Dapps For End Users
 
-## Robonomics team developers who will provide lectures and master classes
+## Robonomics team developers who will provide lessons
 * [@kap2fox](https://scholar.google.com/citations?user=J3HFpjoAAAAJ&hl=en)
 * [@akru](https://github.com/akru)
 * [@vol4tim](https://github.com/vol4tim)
