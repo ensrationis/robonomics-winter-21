@@ -1,0 +1,3 @@
+[submodule "lesson-6.1/example-robonomics-dapp"]
+	path = lesson-6.1/example-robonomics-dapp
+	url = https://github.com/airalab/example-robonomics-dapp
