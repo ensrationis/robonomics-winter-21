@@ -74,6 +74,12 @@ Save generated address and seed on safe place for use it later.
 
 Currently address balance is zero and the network don't permits to send transactions from this address. To fix it let's transfer a bit of tokens from `Alice` account. I'll use Robonomics Portal on https://parachain.robonomics.network connected to local node with address `ws://127.0.0.1:9944`.
 
+If you use remote server, you need to create ssh tunnel on local machine:
+```
+ssh -f -N -L 9944:localhost:9944 root@REMOTE_SERVER_IP
+```
+After that, you can use `ws://127.0.0.1:9944` in https://parachain.robonomics.network/
+
 ![portal transfer](https://ipfs.io/ipfs/QmbpArfthyor5wFWRexgPAyjK7GaFduasc1eoReaf9TpJg/tran.png)
 
 And then `datalog` device could be used for saving any data on blockchain. The key `-s` is used to set secret seed of account. Account should have non-zero balance to send transactions.
