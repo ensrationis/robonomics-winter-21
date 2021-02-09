@@ -76,7 +76,7 @@ Currently address balance is zero and the network don't permits to send transact
 
 If you use remote server, you need to create ssh tunnel on local machine:
 ```
-ssh -f -N -L 9944:localhost:9944 root@REMOTE_SERVER_IP
+ssh -f -N -L 9944:127.0.0.1:9944 root@REMOTE_SERVER_IP
 ```
 After that, you can use `ws://127.0.0.1:9944` in https://parachain.robonomics.network/
 
