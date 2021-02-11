@@ -8,12 +8,20 @@ For dApp development and testing, we will use a local Robonomics node. To do thi
 
 Unpack the archive
 ```sh
+wget https://github.com/airalab/robonomics/releases/download/v0.24.0/robonomics-ubuntu-0.24.0-x86_64.zip
 unzip robonomics-ubuntu-0.24.0-x86_64.zip
+cd robonomics-ubuntu-0.24.0-x86_64
+chmod +x robonomics
 ```
 
 Now we can start the node in development mode. To do this, use the --dev flag
 ```sh
 ./robonomics --dev
+```
+
+> Troubleshooting
+```sh
+./robonomics purge-chain --dev
 ```
 
 ### Browser extension
@@ -28,6 +36,8 @@ After installing the extension, create a new account.
 > The first step is completed.
 
 ## DApp development
+
+### Step 1
 
 > We will write the dApp using the vue.js framework, although you can use whatever you like/can.
 
@@ -44,7 +54,7 @@ After installation, you can run the command in the terminal
 vue create mydapp
 ```
 
-Answer a few questions of the setup wizard.
+Answer a few questions of the setup wizard. We will be using version Vue 2, so we keep the default version `Default ([Vue 2] babel, eslint)`.
 
 Way 2:
 
@@ -63,14 +73,40 @@ yarn
 yarn serve
 ```
 
-### Getting started with polkadot.js
+### Step 2. Getting started with polkadot.js
 
 #### Installing dependencies
 
 To connect the dApp to the Robonomics chain, there is the `@polkadot/api` library. And for interaction of dApp with an extension with keys, we have the `@polkadot/extension-dapp` library. We need to install them into our application.
+More details on using this library can be found in the documentation https://polkadot.js.org/docs/.
+
+Way 1:
 
 ```sh
 yarn add @polkadot/api @polkadot/extension-dapp
+```
+
+You also need to add the `vue.config.js` file to support `mjs` extension.
+
+`vue.config.js`
+```js
+module.exports = {
+  publicPath: "",
+  configureWebpack: {
+    resolve: {
+      extensions: ["*", ".mjs", ".js", ".vue", ".json", ".gql", ".graphql"]
+    },
+    module: {
+      rules: [
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: "javascript/auto"
+        }
+      ]
+    }
+  }
+};
 ```
 
 #### Connecting to Robonomics
@@ -118,7 +154,8 @@ So that we can sign transactions with the key from the extension, let’s add tw
 
 `src/utils/api.js`
 ```js
-...
+...OTHER_CODE...
+
 import {
   web3Accounts,
   web3Enable,
@@ -145,14 +182,16 @@ export async function initAccount(index = 0) {
   }
   throw new Error("no accounts");
 }
-...
+
+...OTHER_CODE...
 ```
 
 Our account will have a zero balance, while we need a little funds. So we need to create another faucet function. As we launched Robonomics with the `--dev` flag, we have `Alice` account with a large balance, so we will request funds from there.
 
 `src/utils/api.js`
 ```js
-...
+...OTHER_CODE...
+
 import { Keyring } from "@polkadot/keyring";
 
 export function getBalance(account, cb) {
@@ -169,10 +208,19 @@ export async function faucet(address) {
   const tx = api.tx.balances.transfer(address, 1000000000000000);
   await tx.signAndSend(account);
 }
-...
+
+...OTHER_CODE...
 ```
 
 The full version of script https://github.com/airalab/example-robonomics-dapp/blob/master/src/utils/api.js
+
+Run app
+
+```sh
+yarn serve
+```
+
+Way 2:
 
 If you start the application with cloning the repository, then in order to complete these steps, it will be enough to switch to step 2 and install the rest of the dependencies.
 
@@ -180,13 +228,16 @@ If you start the application with cloning the repository, then in order to compl
 git checkout step-2
 cp src/config.template.json src/config.json
 yarn
+yarn serve
 ```
 
-### Vue connecting component
+### Step 3. Vue connecting component
 
 #### Connecting
 
 We have already written a script for connecting. Now we can use it on our interface. It is enough to call the written `initApi` function in  the root component `App.vue`. And while the user is waiting for a connection, we will show him a small loader, for now in the form of an ellipsis.
+
+Way 1:
 
 Component template and base styles.
 
@@ -205,7 +256,7 @@ Component template and base styles.
   </div>
 </template>
 
-...
+...OTHER_CODE...
 
 <style>
 #app {
@@ -286,10 +337,11 @@ Now we can use our account, top up its balance and show it on the interface.
 Let’s add the appropriate markup to the template
 
 `src/App.vue`
-
 ```js
 <template>
-  ...
+
+  ...OTHER_CODE...
+
     <template v-else>
       <div v-if="error" class="error">{{ error }}</div>
       <template v-else-if="api && account">
@@ -301,7 +353,9 @@ Let’s add the appropriate markup to the template
         </p>
       </template>
     </template>
-  ...
+
+  ...OTHER_CODE...
+
 </template>
 ```
 
@@ -309,16 +363,23 @@ Let’s add new fields for account address and balance
 
 `src/App.vue`
 ```js
-...
+
+...OTHER_CODE...
+
 data() {
   return {
-    ...
+
+    ...OTHER_CODE...
+
     account: null,
     balance: 0,
-    ...
+
+    ...OTHER_CODE...
+
   };
 }
-...
+
+...OTHER_CODE...
 ```
 
 We need to add the account initialization to the `init` function and get its balance
@@ -328,17 +389,24 @@ We need to add the account initialization to the `init` function and get its bal
 <script>
 import { initApi, initAccount, getBalance, faucet } from "./utils/api";
 import { formatBalance } from "@polkadot/util";
-...
+
+...OTHER_CODE...
+
 async init() {
-  ...
+
+  ...OTHER_CODE...
+
   this.api = await initApi();
   this.account = await initAccount();
   getBalance(this.account, balance => {
     this.balance = formatBalance(balance);
   });
-  ...
+
+  ...OTHER_CODE...
+
 }
-...
+
+...OTHER_CODE...
 </script>
 ```
 
@@ -346,33 +414,45 @@ It remains to add the function of replenishing the balance, when clicking on the
 
 `src/App.vue`
 ```js
-...
+
+...OTHER_CODE...
+
   methods: {
     faucet() {
       faucet(this.account);
     },
-  ...
-  }
-...
+
+...OTHER_CODE...
 ```
 
-https://github.com/airalab/example-robonomics-dapp/blob/master/src/App.vue
+https://github.com/airalab/example-robonomics-dapp/blob/step-3/src/App.vue
+
+Run app
+
+```sh
+yarn serve
+```
+
+Way 2:
 
 If you start the application with cloning the repository, then to complete these steps, you will just need to switch to step 3.
 
 ```sh
 git checkout step-3
+yarn serve
 ```
 
 As a result we will get this picture in the browser
 
 ![screen2](./assets/screen2.png)
 
-### Datalog
+### Step 4. Datalog
 
 To save and read any data in the chain, we use the `datalog` module.
 
 For an example of how to use this module, let's make a `Datalog.vue` component.
+
+Way 1:
 
 In the markup, we will have a button for reading data `read` with a block, where we will display a list in the form of a date and the data itself. And there will be a form with a text input, into which you can enter any data in the form of a string, and a `write` button.
 
@@ -396,7 +476,7 @@ In the markup, we will have a button for reading data `read` with a block, where
   </div>
 </template>
 
-...
+...OTHER_CODE...
 
 <style scoped>
 .log {
@@ -469,7 +549,8 @@ To switch between components, added to `App.vue` the output of our component
 
 `src/App.vue`
 ```js
-...
+...OTHER_CODE...
+
 <template v-else-if="api && account">
   <p>
     Account: <b>{{ account }}</b> {{ balance }} |
@@ -488,11 +569,14 @@ To switch between components, added to `App.vue` the output of our component
     <Datalog v-if="tab === 'datalog'" :api="api" :account="account" />
   </div>
 </template>
-...
+
+...OTHER_CODE...
 
 <script>
 import Datalog from "./components/Datalog";
-...
+
+...OTHER_CODE...
+
 export default {
   name: "App",
   components: {
@@ -501,11 +585,13 @@ export default {
   data() {
     return {
       tab: "datalog"
-...
+
+...OTHER_CODE...
 </script>
 
 <style>
-...
+...OTHER_CODE...
+
 .tabs button {
   font-size: 14px;
   padding: 10px 20px;
@@ -525,19 +611,30 @@ export default {
 </style>
 ```
 
+Run app
+
+```sh
+yarn serve
+```
+
+Way 2:
+
 If you start the application with cloning the repository, then to complete these steps, you will just need to switch to step 4.
 
 ```sh
 git checkout step-4
+yarn serve
 ```
 
 As a result we will get this picture in the browser
 
 ![screen3](./assets/screen3.png)
 
-### Launch
+### Step 5. Launch
 
 This function is used to start and stop the robot. To demonstrate how to use this module, let's write the `Launch.vue` component.
+
+Way 1:
 
 In the component template, we will have a form where you can specify the address of the robot, the ON/OFF clicker and the button for sending.
 
@@ -565,7 +662,7 @@ In the component template, we will have a form where you can specify the address
   </div>
 </template>
 
-...
+...OTHER_CODE...
 
 <style scoped>
 .log {
@@ -648,64 +745,75 @@ For display, add a new component to `App.vue`
 
 `src/App.vue`
 ```js
-...
-<div>
-  <div class="tabs">
-    <button
-      @click="tab = 'datalog'"
-      :class="{ active: tab === 'datalog' }"
-    >
-      datalog
-    </button>
-    <button
-      @click="tab = 'launch'"
-      :class="{ active: tab === 'launch' }"
-    >
-      launch
-    </button>
+<template>
+...OTHER_CODE...
+
+  <div>
+    <div class="tabs">
+      <button
+        @click="tab = 'datalog'"
+        :class="{ active: tab === 'datalog' }"
+      >
+        datalog
+      </button>
+      <button
+        @click="tab = 'launch'"
+        :class="{ active: tab === 'launch' }"
+      >
+        launch
+      </button>
+    </div>
+    <Datalog v-if="tab === 'datalog'" :api="api" :account="account" />
+    <Launch v-if="tab === 'launch'" :api="api" :account="account" />
   </div>
-  <Datalog v-if="tab === 'datalog'" :api="api" :account="account" />
-  <Launch v-if="tab === 'launch'" :api="api" :account="account" />
-</div>
-...
+
+...OTHER_CODE...
+</template>
+
+...OTHER_CODE...
+
 <script>
 import Datalog from "./components/Datalog";
 import Launch from "./components/Launch";
-...
+
+...OTHER_CODE...
+
 components: {
   Datalog,
   Launch
 },
-...
+
+...OTHER_CODE...
 ```
+
+Run app
+
+```sh
+yarn serve
+```
+
+Way 2:
 
 If you start the application with cloning the repository, then to complete these steps, you will just need to switch to step 5.
 
 ```sh
 git checkout step-5
+yarn serve
 ```
 
 As a result we will get this picture in the browser
 
 ![screen4](./assets/screen4.png)
 
-### Demo
+### Step 6. Demo
 
 In this demo, we will have a car that can be started and stopped through the dApp. The car collects a log during the trip, and after stopping, saves it to the chain. Here we will use both modules, which we tried separately, in conjunction.
 
 To emulate the behavior of a robot (car), we will write a Robot class. We will use the `Alice` key as an account for this robot. The `Robot` class will watch for `NewLaunch` events to turn itself on and off. After turning on, it starts collecting data into the log, in terms of data it will be just a timestamp. And after shutdown, it saves this log to the `datalog` module.
 
-`src/utils/robot.js`
-```js
-import { stringToHex } from "@polkadot/util";
-import { keyring } from "./api";
+Way 1:
 
-export default class Robot {
-  ...
-}
-```
-
-The full code of the file https://github.com/airalab/example-robonomics-dapp/blob/master/src/utils/robot.js
+Create file `src/utils/robot.js`. The full code of the file https://github.com/airalab/example-robonomics-dapp/blob/master/src/utils/robot.js
 
 For visualization, we will create a `Demo.vue` component, where we will have a start button, car animation and log output.
 
@@ -739,7 +847,7 @@ For visualization, we will create a `Demo.vue` component, where we will have a s
   </div>
 </template>
 
-...
+...OTHER_CODE...
 
 <style scoped>
 .log {
@@ -804,7 +912,8 @@ Component code. Here we need to create an instance of the `Robot` class and a la
 
 `src/components/Demo.vue`
 ```js
-...
+...OTHER_CODE...
+
 <script>
 import { u8aToString } from "@polkadot/util";
 import Robot from "../utils/robot";
@@ -859,58 +968,80 @@ export default {
   }
 };
 </script>
-...
+
+...OTHER_CODE...
 ```
 
 https://github.com/airalab/example-robonomics-dapp/blob/master/src/components/Demo.vue
 
-Let's add another picture of our car to `src/assets/car.png`.
+Let's add another picture of our car to `src/assets/car.png`. Example https://github.com/airalab/example-robonomics-dapp/blob/master/src/assets/car.png.
 
 For display, add a new component to `App.vue`
 
 `src/App.vue`
 ```js
-...
-<div>
-  <div class="tabs">
-    <button
-      @click="tab = 'datalog'"
-      :class="{ active: tab === 'datalog' }"
-    >
-      datalog
-    </button>
-    <button
-      @click="tab = 'launch'"
-      :class="{ active: tab === 'launch' }"
-    >
-      launch
-    </button>
-    <button @click="tab = 'demo'" :class="{ active: tab === 'demo' }">
-      demo
-    </button>
+<template>
+
+...OTHER_CODE...
+
+  <div>
+    <div class="tabs">
+      <button
+        @click="tab = 'datalog'"
+        :class="{ active: tab === 'datalog' }"
+      >
+        datalog
+      </button>
+      <button
+        @click="tab = 'launch'"
+        :class="{ active: tab === 'launch' }"
+      >
+        launch
+      </button>
+      <button @click="tab = 'demo'" :class="{ active: tab === 'demo' }">
+        demo
+      </button>
+    </div>
+    <Datalog v-if="tab === 'datalog'" :api="api" :account="account" />
+    <Launch v-if="tab === 'launch'" :api="api" :account="account" />
+    <Demo v-if="tab === 'demo'" :api="api" :account="account" />
   </div>
-  <Datalog v-if="tab === 'datalog'" :api="api" :account="account" />
-  <Launch v-if="tab === 'launch'" :api="api" :account="account" />
-  <Demo v-if="tab === 'demo'" :api="api" :account="account" />
-</div>
-...
+
+...OTHER_CODE...
+
+</template>
+
+...OTHER_CODE...
+
 <script>
 import Datalog from "./components/Datalog";
 import Launch from "./components/Launch";
 import Demo from "./components/Demo";
-...
+
+...OTHER_CODE...
+
 components: {
   Datalog,
   Launch,
   Demo
 },
-...
+
+...OTHER_CODE...
 ```
+
+Run app
+
+```sh
+yarn serve
+```
+
+Way 2:
 
 If you start the application with cloning the repository, then to complete these steps, you will just need to switch to step 6.
 
 ```sh
 git checkout step-6
+yarn serve
 ```
 
 As a result we will get this picture in the browser
